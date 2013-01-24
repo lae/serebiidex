@@ -38,4 +38,4 @@ while c <= 649 do
 end
 
 serialized_pokedex = Marshal.dump(pokedex)
-File.open('pokedex.txt', 'w') {|f| f.write(serialized_pokedex) }
+File.open('pokedex.bin', 'w') {|f| f.write(serialized_pokedex) }

@@ -2,7 +2,7 @@
 require 'optparse'
 
 root = 'http://www.serebii.net/pokedex-bw/'
-pokedex = Marshal.load File.read('pokedex.txt')
+pokedex = Marshal.load File.read('pokedex.bin')
 
 opts = {}
 OptionParser.new do |o|
