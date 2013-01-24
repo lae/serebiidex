@@ -12,28 +12,6 @@ OptionParser.new do |o|
     o.parse!
 end
 
-=begin
-while c <= 649 do
-    uri = "%s%03d.shtml" % [root, c]
-    page = Nokogiri::HTML(open(uri))
-    info = page.css('.dextable')[1].css('.fooinfo')
-    stats = page.css('.dextable')[-1].css('tr')
-    pokedex << p = Hash.new
-    p.store('num', c)
-    p.store('name', info[0].text)
-    p.store('types', info[4].css("img").map { |d| d['src'].split(/\.|\//)[3] })
-    p['stats'] = { 'base' => rs(stats[2]),
-        'hindering_min' => rs(stats[4], 0),
-        'hindering_max' => rs(stats[4], 1),
-        'neutral_min' => rs(stats[6], 0),
-        'neutral_max' => rs(stats[6], 1),
-        'beneficial_min' => rs(stats[8], 0),
-        'beneficial_max' => rs(stats[8], 1) }
-    p.store('abilities', info[5].css('a b').map { |d| d.text })
-    c = c.next
-end
-=end
-
 if opts.length == 0
     puts "No options given."
     exit
@@ -43,9 +21,22 @@ def print_dex(entry)
     e = entry[0]
     types = e['types'].map {|t| t.capitalize }.join(', ')
     abilities = e['abilities'].join(', ')
+    shmin = e['stats']['hindering_min']
+    snmax = e['stats']['hindering_max']
+    snmin = e['stats']['neutral_min']
+    shmax = e['stats']['neutral_max']
+    sbmin = e['stats']['beneficial_min']
+    sbmax = e['stats']['beneficial_max']
     puts "======== #%03d - %s" % [e['num'], "#{e['name']} ".ljust(48, '=')]
     puts "       Types: #{types}"
     puts "   Abilities: #{abilities}"
+    puts "  Statistics: HP   - %s" % ["Attack", "Defense", "Sp. Atk.", "Sp. Def.", "Speed"].map { |h| h.ljust(9) }.join('- ')
+    puts "    hindered- %3d  - %s" % [shmin[0], shmin[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts "    hindered+ %3d  - %s" % [shmax[0], shmax[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts "     neutral- %3d  - %s" % [snmin[0], snmin[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts "     neutral+ %3d  - %s" % [snmax[0], snmax[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts "  beneficial- %3d  - %s" % [sbmin[0], sbmin[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts "  beneficial+ %3d  - %s" % [sbmax[0], sbmax[1..5].map { |s| s.ljust(9) }.join('- ') ]
 end
 
 if id = opts[:id]
