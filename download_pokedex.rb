@@ -2,7 +2,6 @@
 require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
-require 'pp'
 
 root = 'http://www.serebii.net/pokedex-bw/'
 c = 1
@@ -39,3 +38,15 @@ end
 
 serialized_pokedex = Marshal.dump(pokedex)
 File.open('pokedex.bin', 'w') {|f| f.write(serialized_pokedex) }
+
+root = 'http://www.serebii.net/abilitydex/'
+abilities = pokedex.inject([]) {|r,d| d['abilities'].each {|a| r << a unless r.include?(a) }; r }
+abilitydex = abilities.map! {|a| a.downcase.gsub(/ /,'')}.inject([]) { |r,a|
+    page = Nokogiri::HTML(open(root+a+'.shtml'))
+    data = page.css('.dextable')[1].css('td').map {|td| td.text }
+    r << [data[2], data[5], data[7]]
+    r
+}
+
+serialized_abilitydex = Marshal.dump(abilitydex)
+File.open('abilitydex.bin', 'w') {|f| f.write(serialized_abilitydex) }
