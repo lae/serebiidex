@@ -13,7 +13,7 @@ OptionParser.new do |o|
     o.on('--name NAME', '-n', 'Search by NAME') { |n| @opts[:name] = n }
     o.on('--ability ABILITY', 'Search by ABILITY') { |a| @opts[:ability] = a }
     o.on('--type TYPES', '-t', 'Search by comma-delimited TYPES') {|t| @opts[:type] = t.split(',') }
-    o.on('--stat-display STATS', '-s', 'Limit statistics display to comma-delimited STATS') {|s|
+    o.on('--stat-display STATS', '-D', 'Limit statistics display to comma-delimited STATS') {|s|
         @opts[:sd] = []
         l = %w{h hmin hmax n nmin nmax b bmin bmax}
         s = s.split(',')
