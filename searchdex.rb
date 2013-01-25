@@ -50,8 +50,7 @@ def print_dex(entry)
     puts "       Types: #{types}"
     puts "  Immunities: #{immunities}" if immunities.length > 0
     puts "   Abilities: #{abilities}"
-    puts ' '*12 + "STATISTICS".center(52)
-    puts "              HP   - %s" % ["Attack", "Defense", "Sp. Atk.", "Sp. Def.", "Speed"].map { |h| h.ljust(9) }.join('- ')
+    puts "  STATISTICS  HP   - %s" % ["Attack", "Defense", "Sp. Atk.", "Sp. Def.", "Speed"].map { |h| h.ljust(9) }.join('- ')
     puts "    hindered- %3d  - %s" % [shmin[0], shmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('hmin')
     puts "    hindered+ %3d  - %s" % [shmax[0], shmax[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('hmax')
     puts "     neutral- %3d  - %s" % [snmin[0], snmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('nmin')
