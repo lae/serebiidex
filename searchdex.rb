@@ -27,6 +27,7 @@ OptionParser.new do |o|
             end
         }
     }
+    o.on('--no-prompt', 'Don\'t show any prompts') { @opts[:noprompt] = true }
     o.on('-h', 'Show this help') { puts '',o,''; exit }
     o.parse!
 end
@@ -75,24 +76,20 @@ if @opts[:adex]
     exit
 end
 
-if ! @opts.empty?
-    filter = pokedex
-    filter = filter.select {|dex| dex['num'] == @opts[:id].to_i} if @opts[:id]
-    filter = filter.select {|dex| dex['name'] =~ /#{@opts[:name]}/i} if @opts[:name]
-    filter = filter.select {|dex| dex['abilities'].any? {|a| a =~ /#{@opts[:ability]}/i}} if @opts[:ability]
-    filter = filter.select {|dex| @opts[:type].all? {|t| dex['types'].any? {|d| d =~ /#{t}/i }}} if @opts[:type]
-    if filter.length == pokedex.length
-        print 'Are you sure you want to print the entire Pokedex (your filters, if any, matched everything? '
-        filter.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
-    elsif filter.length > 100
-        print 'Your constraints matched over 100 Pokemon. Do you still want to print these entries? '
-        filter.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
-    elsif filter.length > 0
-        filter.each {|e| print_dex(e)}
-    else
-        puts "Your constraints did not match any Pokemon."
-    end
+filter = pokedex
+filter = filter.select {|dex| dex['num'] == @opts[:id].to_i} if @opts[:id]
+filter = filter.select {|dex| dex['name'] =~ /#{@opts[:name]}/i} if @opts[:name]
+filter = filter.select {|dex| dex['abilities'].any? {|a| a =~ /#{@opts[:ability]}/i}} if @opts[:ability]
+filter = filter.select {|dex| @opts[:type].all? {|t| dex['types'].any? {|d| d =~ /#{t}/i }}} if @opts[:type]
+if filter.length == pokedex.length
+    print 'Are you sure you want to print the entire Pokedex? ' unless !@opts[:noprompt].nil?
+    p = @opts[:noprompt].nil?? STDIN.gets.chomp : 'y' 
+    filter.each {|e| print_dex(e)} if p == 'y'
+elsif filter.length > 100
+    print 'Your constraints matched over 100 Pokemon. Do you still want to print these entries? ' unless !@opts[:noprompt].nil?
+    filter.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y' or @opts[:noprompt].nil?
+elsif filter.length > 0
+    filter.each {|e| print_dex(e)}
 else
-    print 'Are you sure you want to print the entire Pokedex? '
-    pokedex.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
+    puts "Your constraints did not match any Pokemon."
 end
