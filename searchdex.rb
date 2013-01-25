@@ -12,6 +12,7 @@ OptionParser.new do |o|
     o.on('--id ID', 'Search by ID') { |id| opts[:id] = id }
     o.on('--name NAME', '-n', 'Search by NAME') { |n| opts[:name] = n }
     o.on('--ability ABILITY', 'Search by ABILITY') { |a| opts[:ability] = a }
+    o.on('--type TYPE', '-t', 'Search by TYPES') {|t| opts[:type] = t.split(',') }
     o.on('-h', 'Show this help') { puts '',o,''; exit }
     o.parse!
 end
@@ -63,6 +64,7 @@ if ! opts.empty?
     filter = filter.select {|dex| dex['num'] == opts[:id].to_i} if opts[:id]
     filter = filter.select {|dex| dex['name'] =~ /#{opts[:name]}/i} if opts[:name]
     filter = filter.select {|dex| dex['abilities'].any? {|a| a =~ /#{opts[:ability]}/i}} if opts[:ability]
+    filter = filter.select {|dex| opts[:type].all? {|t| dex['types'].any? {|d| d =~ /#{t}/i }}} if opts[:type]
     if filter.length > 0
         filter.each {|e| print_dex(e)}
     else
