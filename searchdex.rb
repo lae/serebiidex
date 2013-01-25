@@ -15,13 +15,10 @@ OptionParser.new do |o|
     o.parse!
 end
 
-if opts.length == 0
-    puts "No options given."
-    exit
-end
+@immunities = { 'normal' => 'Ghost', 'flying' => 'Ground', 'ground' => 'Electric', 'ghost' => 'Normal, Fighting', 'steel' => 'Poison', 'dark' => 'Psychic' }
 
 def print_dex(entry)
-    e = entry[0]
+    e = entry
     types = e['types'].map {|t| t.capitalize }.join(', ')
     abilities = e['abilities'].join(', ')
     shmin = e['stats']['hindering_min']
@@ -32,6 +29,7 @@ def print_dex(entry)
     sbmax = e['stats']['beneficial_max']
     puts "======== #%03d - %s" % [e['num'], "#{e['name']} ".ljust(48, '=')]
     puts "       Types: #{types}"
+    puts "  Immunities: %s" % e['types'].map {|t| @immunities[t] }.compact.join(', ')
     puts "   Abilities: #{abilities}",''
     puts ' '*12 + "STATISTICS".center(52)
     puts "              HP   - %s" % ["Attack", "Defense", "Sp. Atk.", "Sp. Def.", "Speed"].map { |h| h.ljust(9) }.join('- ')
@@ -41,12 +39,13 @@ def print_dex(entry)
     puts "     neutral+ %3d  - %s" % [snmax[0], snmax[1..5].map { |s| s.ljust(9) }.join('- ') ]
     puts "  beneficial- %3d  - %s" % [sbmin[0], sbmin[1..5].map { |s| s.ljust(9) }.join('- ') ]
     puts "  beneficial+ %3d  - %s" % [sbmax[0], sbmax[1..5].map { |s| s.ljust(9) }.join('- ') ]
+    puts ''
 end
 
 def print_adex(entry)
     e = entry
     puts "========%s" % " #{e[0]} ".ljust(56, '=')
-    puts " Description: #{e[1]}", "      Effect: #{e[2]}"
+    puts " Description: #{e[1]}", "      Effect: #{e[2]}", ''
 end
 
 if opts[:adex]
@@ -55,10 +54,12 @@ if opts[:adex]
     else
         puts "You didn't specify an ability using -n."
     end
-else
-
-if id = opts[:id]
-    print_dex(pokedex.select {|dex| dex['num'] == id.to_i})
+    exit
 end
 
+if id = opts[:id]
+    pokedex.select {|dex| dex['num'] == id.to_i}.each {|e| print_dex(e)}
+else
+    print 'Are you sure you want to print the entire Pokedex? '
+    pokedex.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
 end
