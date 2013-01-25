@@ -11,6 +11,7 @@ OptionParser.new do |o|
     o.on('--abilitydex', '-a', 'Search Ability Dex') { opts[:adex] = true }
     o.on('--id ID', 'Search by ID') { |id| opts[:id] = id }
     o.on('--name NAME', '-n', 'Search by NAME') { |n| opts[:name] = n }
+    o.on('--ability ABILITY', 'Search by ABILITY') { |a| opts[:ability] = a }
     o.on('-h', 'Show this help') { puts '',o,''; exit }
     o.parse!
 end
@@ -57,10 +58,16 @@ if opts[:adex]
     exit
 end
 
-if id = opts[:id]
-    pokedex.select {|dex| dex['num'] == id.to_i}.each {|e| print_dex(e)}
-elsif opts[:name]
-    pokedex.select {|dex| dex['name'] =~ /#{opts[:name]}/i}.each {|e| print_dex(e)}
+if ! opts.empty?
+    filter = pokedex
+    filter = filter.select {|dex| dex['num'] == opts[:id].to_i} if opts[:id]
+    filter = filter.select {|dex| dex['name'] =~ /#{opts[:name]}/i} if opts[:name]
+    filter = filter.select {|dex| dex['abilities'].any? {|a| a =~ /#{opts[:ability]}/i}} if opts[:ability]
+    if filter.length > 0
+        filter.each {|e| print_dex(e)}
+    else
+        puts "Your constraints did not match any Pokemon."
+    end
 else
     print 'Are you sure you want to print the entire Pokedex? '
     pokedex.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
