@@ -39,6 +39,7 @@ def print_dex(entry)
     e = entry
     types = e['types'].map {|t| t.capitalize }.join(', ')
     abilities = e['abilities'].join(', ')
+    immunities = e['types'].map {|t| @immunities[t] }.compact.join(', ')
     shmin = e['stats']['hindering_min']
     snmax = e['stats']['hindering_max']
     snmin = e['stats']['neutral_min']
@@ -47,8 +48,8 @@ def print_dex(entry)
     sbmax = e['stats']['beneficial_max']
     puts "======== #%03d - %s" % [e['num'], "#{e['name']} ".ljust(48, '=')]
     puts "       Types: #{types}"
-    puts "  Immunities: %s" % e['types'].map {|t| @immunities[t] }.compact.join(', ')
-    puts "   Abilities: #{abilities}",''
+    puts "  Immunities: #{immunities}" if immunities.length > 0
+    puts "   Abilities: #{abilities}"
     puts ' '*12 + "STATISTICS".center(52)
     puts "              HP   - %s" % ["Attack", "Defense", "Sp. Atk.", "Sp. Def.", "Speed"].map { |h| h.ljust(9) }.join('- ')
     puts "    hindered- %3d  - %s" % [shmin[0], shmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('hmin')
