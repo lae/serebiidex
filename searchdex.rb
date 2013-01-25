@@ -55,7 +55,7 @@ def print_dex(entry)
     puts "    hindered+ %3d  - %s" % [shmax[0], shmax[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('hmax')
     puts "     neutral- %3d  - %s" % [snmin[0], snmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('nmin')
     puts "     neutral+ %3d  - %s" % [snmax[0], snmax[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('nmax')
-    puts "  beneficial- %3d  - %s" % [sbmin[0], sbmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('nmin')
+    puts "  beneficial- %3d  - %s" % [sbmin[0], sbmin[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('bmin')
     puts "  beneficial+ %3d  - %s" % [sbmax[0], sbmax[1..5].map { |s| s.ljust(9) }.join('- ') ] if @opts[:sd].include?('bmax')
     puts ''
 end
