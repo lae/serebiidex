@@ -81,7 +81,13 @@ if ! @opts.empty?
     filter = filter.select {|dex| dex['name'] =~ /#{@opts[:name]}/i} if @opts[:name]
     filter = filter.select {|dex| dex['abilities'].any? {|a| a =~ /#{@opts[:ability]}/i}} if @opts[:ability]
     filter = filter.select {|dex| @opts[:type].all? {|t| dex['types'].any? {|d| d =~ /#{t}/i }}} if @opts[:type]
-    if filter.length > 0
+    if filter.length == pokedex.length
+        print 'Are you sure you want to print the entire Pokedex (your filters, if any, matched everything? '
+        filter.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
+    elsif filter.length > 100
+        print 'Your constraints matched over 100 Pokemon. Do you still want to print these entries? '
+        filter.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
+    elsif filter.length > 0
         filter.each {|e| print_dex(e)}
     else
         puts "Your constraints did not match any Pokemon."
