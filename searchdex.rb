@@ -59,6 +59,8 @@ end
 
 if id = opts[:id]
     pokedex.select {|dex| dex['num'] == id.to_i}.each {|e| print_dex(e)}
+elsif opts[:name]
+    pokedex.select {|dex| dex['name'] =~ /#{opts[:name]}/i}.each {|e| print_dex(e)}
 else
     print 'Are you sure you want to print the entire Pokedex? '
     pokedex.each {|e| print_dex(e)} if STDIN.gets.chomp == 'y'
