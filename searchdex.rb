@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 require 'optparse'
 
-root = 'http://www.serebii.net/pokedex-bw/'
+@root = 'http://www.serebii.net/pokedex-bw/'
 pokedex = Marshal.load File.read('pokedex.bin')
 abilitydex = Marshal.load File.read('abilitydex.bin')
 
@@ -46,7 +46,7 @@ def print_dex(entry)
     shmax = e['stats']['neutral_max']
     sbmin = e['stats']['beneficial_min']
     sbmax = e['stats']['beneficial_max']
-    puts "======== #%03d - %s" % [e['num'], "#{e['name']} ".ljust(48, '=')]
+    puts "======== #%03d - %s #{@root}%03d.shtml" % [e['num'], "#{e['name']} ".ljust(48, '='), e['num']]
     puts "       Types: #{types}"
     puts "  Immunities: #{immunities}" if immunities.length > 0
     puts "   Abilities: #{abilities}"
