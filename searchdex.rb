@@ -13,20 +13,42 @@ OptionParser.new do |o|
     o.on('--name NAME', '-n', 'Search by NAME') { |n| @opts[:name] = n }
     o.on('--ability ABILITY', 'Search by ABILITY') { |a| @opts[:ability] = a }
     o.on('--type TYPES', '-t', 'Search by comma-delimited TYPES') {|t| @opts[:type] = t.split(',') }
-    o.on('--stat-display STATS', '-D', 'Limit statistics display to comma-delimited STATS') {|s|
+    o.on('--stat-display STATS', '-D', 'Limit statistics display to comma-delimited STATS') do |d|
         @opts[:sd] = []
         l = %w{h hmin hmax n nmin nmax b bmin bmax}
-        s = s.split(',')
-        abort('Invalid values passed to --stat-display') if !s.all? {|v| l.include?(v) }
-        s.each {|v|
+        d = d.split(',')
+        abort('Invalid values passed to --stat-display') if !d.all? {|v| l.include?(v) }
+        d.each do |v|
             if v.length == 1
                 @opts[:sd] << "#{v}min"
                 @opts[:sd] << "#{v}max"
             else
                 @opts[:sd] << v
             end
-        }
-    }
+        end
+    end
+    o.on('-S', '--stat-sort field,group,order', Array, 'Sort by statistics') do |s|
+        f = %w{total hp attack defense spatk spdef speed}
+        abort('Field parameter must be one of: ' + f.join(' ')) if ! f.include?s[0]
+        @opts[:sortby] = case s[0]
+            when 'total' then -1
+            when 'hp' then 0
+            when 'attack' then 1
+            when 'defense' then 2
+            when 'spatk' then 3
+            when 'spdef' then 4
+            when 'speed' then 5
+            else -1
+        end
+        if defined?(s[1])
+            l = %w{hmin hmax nmin nmax bmin bmax}
+            abort('Group parameter must be one of: ' + l.join(' ')) if ! l.include?s[1]
+            opts[:sortline] = s[1]
+        else
+            opts[:sortline] = 'nmax'
+       end
+        exit
+    end
     o.on('--no-prompt', 'Don\'t show any prompts') { @opts[:noprompt] = true }
     o.on('-h', 'Show this help') { puts '',o,''; exit }
     o.parse!
